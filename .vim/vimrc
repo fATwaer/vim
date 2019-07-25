@@ -1,0 +1,140 @@
+let mapleader=" "      
+map s <nop>
+map S :w<CR>
+map Q :q<CR>
+map R :source $MYVIMRC<CR>
+
+map sr :set splitright<CR> :vsplit<CR>
+map sl :set nosplitright<CR> :split<CR>
+map su :set nosplitbelow<CR> :split<CR>
+map sd :set nosplitbelow<CR> :split<CR>
+
+map <LEADER> <C-w>
+map <C-n> :NERDTreeToggle<CR>
+
+set pastetoggle=<F11>
+
+set nu
+set cursorline
+set nocompatible
+
+" 不超出屏幕
+set wrap 		
+set showcmd
+set wildmenu
+set scrolloff=7
+" 高亮搜索
+set hlsearch
+exec "nohlsearch"
+set incsearch
+set ignorecase
+set smartcase
+
+" 格式设置 "
+set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+set termencoding=utf-8
+set encoding=utf-8
+
+
+" 缩进
+set tabstop=4
+set shiftwidth=4
+set mouse=a
+set backspace=indent,eol,start
+filetype off
+syntax on
+" let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+" let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+" let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+set laststatus=2
+set autochdir
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" Vim-Plug
+call plug#begin('~/.vim/plugged')
+
+Plug 'vim-airline/vim-airline'
+Plug 'altercation/vim-colors-solarized'
+Plug 'morhetz/gruvbox'
+Plug 'connorholyday/vim-snazzy'
+Plug 'fatih/vim-go' 
+Plug 'ycm-core/YouCompleteMe'
+Plug 'jiangmiao/auto-pairs'
+Plug 'tpope/vim-surround'
+Plug 'kien/ctrlp.vim'
+" NerdTree
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'scrooloose/nerdtree'
+Plug 'kien/ctrlp.vim'
+" NerdTree
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'scrooloose/nerdtree'
+
+" Other visual enhancement
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'itchyny/vim-cursorword'
+" Git
+Plug 'rhysd/conflict-marker.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'mhinz/vim-signify'
+Plug 'gisphm/vim-gitignore', { 'for': ['gitignore', 'vim-plug']  }"
+" search
+Plug '~/.fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'rking/ag.vim'
+Plug 'majutsushi/tagbar'
+Plug 'junegunn/limelight.vim'
+
+" align
+Plug 'junegunn/vim-easy-align'
+Plug 'junegunn/goyo.vim'
+call plug#end()
+
+colorscheme snazzy
+colorscheme gruvbox
+set t_Co=256
+
+" NerdTree
+" autocmd vimenter * NERDTree
+
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '-'
+let g:NERDTreeHidden=1
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+nmap <F8> :TagbarToggle<CR>
+map <C-f> :FZF ~<CR>
+
+
+
+" fzf
+set rtp+=~/.fzf
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+
+
+" Default fzf layout
+" - down / up / left / right
+let g:fzf_layout = { 'down': '~30%' }
+let g:ag_working_path_mode="r"
+vnoremap <leader>G "hy:Ag "<C-r>h"<CR>
+let g:ag_prg="ag --vimgrep"
+
+" easy-align
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
+let g:go_version_warning = 0
