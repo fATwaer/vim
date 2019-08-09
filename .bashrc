@@ -15,22 +15,55 @@ if [[ -z "$TMUX" ]] && [ "$SSH_CONNECTION" != "" ]; then
 	#tmux has 2> /dev/null || tmux new-session -s ssh_tmux && tmux attach
 fi
 
-# User specific aliases and functions
-alias cls='clear'
-alias ll='ls -a'
+##########################################################
+# alias
+##########################################################
+
+alias ll='ls -al'
 alias l='ls'
 alias vimrc='vim ${HOME}/.vim/vimrc'
+alias bashrc='vim ${HOME}/.bashrc'
+alias rel='source ${HOME}/.bashrc ${HOME}/.bash_profile'
 alias tu='tmux -u'
-PS1="\[\033[1;37;1m\]\[\033[0;32;1m\]\H : \[\033[1;33;1m\]\w\[\033[1;37;1m\]\[\033[1;37;1m\] > \[\033[1;37;1m\]"
 
-# fzf
-[ -f ~/.fzf.bash  ] && source ~/.fzf.bash
+alias grep="grep --color=auto"
+alias mv="mv -b --backup=numbered"
+alias cp="cp -i"
+alias rm="rm2bin"
 
-export FZF_COMPLETION_TRIGGER=''
-alias fzf='fzf --preview "cat {}" '
-
-fag(){
-  local line
-  line=`ag --nocolor "$1" | fzf` \
-    && vim $(cut -d':' -f1 <<< "$line") +$(cut -d':' -f2 <<< "$line")
+function rm2bin {
+	for i in "$@"; do
+		stat $i > /dev/null
+		[[ $? -eq 0 ]] || return
+		size=`ls -alh $i | awk '{print $5}' | grep 'G'`
+		if [[ ! -z $size ]]; then
+			del=""
+			while true; do
+				read -p "file $i is $size, do you want to delete it forever ?(yes/no)" del
+				case $del in
+					Y | y)
+					rm -rf $i
+					break;;
+					N | n)
+					break;;
+					*)
+					continue;;
+				esac
+			done
+		fi
+	done
+	ls $@ | awk 'NR != 1 {if($5!~/**G/) print $NF}' | grep -v '^\.$\|^\.\.$' | xargs -n 10 -i mv -b --backup=numbered {} /tmp/
 }
+
+###########################################################
+# environment
+###########################################################
+
+PS1="\[\033[1;37;1m\]\[\033[0;32;1m\]\H : \[\033[1;33;1m\]\w\[\033[1;37;1m\]\[\033[1;37;1m\] > \[\033[1;37;1m\]"
+export TERM=xterm-256color
+
+###########################################################
+# work/business
+###########################################################
+
+## ->truncate<- ##
