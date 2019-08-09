@@ -27,22 +27,24 @@ alias rel='source ${HOME}/.bashrc ${HOME}/.bash_profile'
 alias tu='tmux -u'
 
 alias grep="grep --color=auto"
-alias mv="mv -b --backup=numbered"
+alias mv="mv -b --backup=numbered "
 alias cp="cp -i"
 alias rm="rm2bin"
 
 function rm2bin {
-	for i in "$@"; do
+	du -sh $@ | awk '{if($1!~/**G/) print $NF}' | xargs -n 10 -i mv -b --backup=numbered {} /tmp/
+	big_file=`du -sh $@ 2>/dev/null | awk '{if($1~/**G/) print $NF}' `
+	for i in $big_file; do
 		stat $i > /dev/null
-		[[ $? -eq 0 ]] || return
+		[[ $? -eq 0 ]] || continue
 		size=`ls -alh $i | awk '{print $5}' | grep 'G'`
 		if [[ ! -z $size ]]; then
 			del=""
 			while true; do
-				read -p "file $i is $size, do you want to delete it forever ?(yes/no)" del
+				read -p "file $i is $size, do you want to delete it forever ?(y/n)" del
 				case $del in
 					Y | y)
-					rm -rf $i
+					/bin/rm -rf $i
 					break;;
 					N | n)
 					break;;
@@ -52,7 +54,6 @@ function rm2bin {
 			done
 		fi
 	done
-	ls $@ | awk 'NR != 1 {if($5!~/**G/) print $NF}' | grep -v '^\.$\|^\.\.$' | xargs -n 10 -i mv -b --backup=numbered {} /tmp/
 }
 
 ###########################################################
